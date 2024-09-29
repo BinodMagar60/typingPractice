@@ -72,28 +72,75 @@ const nextGame = () =>{
 
 
   const handleChange = (e) =>{
+    // const characters = charRef.current;
+    // let currentChar = charRef.current[charIndex];
+    // let typedChar = e.target.value.slice(-1);
+
+    // if(charIndex < characters.length && timeLeft >0 ){
+    //   if(!isTyping){
+    //     setIsTyping(true)
+    //   }
+
+    //   if(typedChar === currentChar.textContent){
+    //     setCharIndex(charIndex + 1)
+    //     correctWrong[charIndex] = " correct "
+    //   }else{
+    //     setCharIndex(charIndex + 1)
+    //     setMistake(mistake + 1)
+    //     correctWrong[charIndex] = " wrong "
+    //   }
+
+    //   if(charIndex === characters.length - 1){
+    //     setIsTyping(false)
+    //   }
+    // }
+
+
     const characters = charRef.current;
-    let currentChar = charRef.current[charIndex];
-    let typedChar = e.target.value.slice(-1);
+  const typedValue = e.target.value;
+  const typedChar = typedValue.slice(-1);
+  
+  // Check if backspace is pressed (the typed string becomes shorter)
+  if (typedValue.length < charIndex) {
+    setCharIndex(charIndex - 1);
+    setCorrectWrong((prev) => {
+      const newCorrectWrong = [...prev];
+      newCorrectWrong[charIndex - 1] = "";  // Reset the class
+      return newCorrectWrong;
+    });
+    return;
+  }
 
-    if(charIndex < characters.length && timeLeft >0 ){
-      if(!isTyping){
-        setIsTyping(true)
-      }
-
-      if(typedChar === currentChar.textContent){
-        setCharIndex(charIndex + 1)
-        correctWrong[charIndex] = " correct "
-      }else{
-        setCharIndex(charIndex + 1)
-        setMistake(mistake + 1)
-        correctWrong[charIndex] = " wrong "
-      }
-
-      if(charIndex === characters.length - 1){
-        setIsTyping(false)
-      }
+  // Proceed if not backspace
+  if (charIndex < characters.length && timeLeft > 0) {
+    if (!isTyping) {
+      setIsTyping(true);
     }
+
+    if (typedChar === characters[charIndex].textContent) {
+      setCorrectWrong((prev) => {
+        const newCorrectWrong = [...prev];
+        newCorrectWrong[charIndex] = " correct ";
+        return newCorrectWrong;
+      });
+    } else {
+      setCorrectWrong((prev) => {
+        const newCorrectWrong = [...prev];
+        newCorrectWrong[charIndex] = " wrong ";
+        return newCorrectWrong;
+      });
+      setMistake(mistake + 1);
+    }
+
+    setCharIndex(charIndex + 1);
+
+    // Stop typing when end of text is reached
+    if (charIndex === characters.length - 1) {
+      setIsTyping(false);
+    }
+  }
+
+
   }
 
 
